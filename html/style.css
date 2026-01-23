@@ -1,0 +1,38 @@
+body {
+  background-color :#6c6f70;
+  }
+
+#top {
+  top: 20px;
+  left: 10px;
+  font-family:'Tiempos-Text';
+  height: 20vh;
+  width: 100vw;
+  background-color: black;
+  align-content: center;
+  color: #ffffff;
+}
+
+#bottom {
+    vertical-align: top;
+    padding: 20px;
+    margin:10px;
+    flex-direction: row;
+    height: 70vh;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 20px;
+    }
+    
+  #switch {
+    vertical-align: top;
+    display: inline-block;
+    background-color: #AAAAAA;
+    padding: 5px 5px;
+    border-style: solid;
+    border-width: 10px;
+    border-radius: 5px;
+    border-color: #9e1b32;
+    flex-grow: 1;
+
+    }
