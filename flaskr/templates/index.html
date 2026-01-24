@@ -2,14 +2,13 @@
 <html>
 <head>
   <title>Planter Box Dashboard</title>
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="stylesheet" href="pistyle.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 
-<div id=top> <img width="550vw" height="auto" src="sju_wordmark_horz_color.svg" style="padding: 0px 3vw;"></div>
+<div id=top> <img width="550vw" height="auto" src="{{ url_for('static', filename='sju_wordmark_horz_color.svg') }}" style="padding: 0px 3vw;"></div>
 
 
 
