@@ -36,3 +36,10 @@ body {
     flex-grow: 1;
 
     }
+
+ #dominant {
+   font-family:'Tiempos-Text';
+   color: #000;
+   text-decoration: underline dotted 5px #9e1b32;
+   
+   }
