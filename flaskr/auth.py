@@ -3,10 +3,10 @@ import bcrypt
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 class Database:
     def __init__(self, db_path: str) -> None:
@@ -100,9 +100,9 @@ class Database:
             print(f"Unknown User with ID: {userID}")
             return ""
     
-db = Database('build/test.db')
+db = Database(current_app.config["AUTH_DB"])
 
-@bp.route('/register', methods=('GET', 'POST'))
+@auth_bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -128,7 +128,7 @@ def register():
 
     return render_template('auth/register.html')
 
-@bp.route('/login', methods=('GET', 'POST'))
+@auth_bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -152,7 +152,7 @@ def login():
 
     return render_template('auth/login.html')
 
-@bp.before_app_request
+@auth_bp.before_app_request
 def load_logged_in_user():
     userID = session.get('user_id')
 
@@ -161,8 +161,9 @@ def load_logged_in_user():
     else:
         g.user = db.getUsername(userID)
 
-@bp.route('/logout')
+@auth_bp.route('/logout')
 def logout():
+    print("called logout")
     session.clear()
     return redirect(url_for('index'))
 

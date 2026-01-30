@@ -1,0 +1,12 @@
+# Instructions: Rename this file to '.env'
+
+# Web Port
+PORT=
+
+# Secret Key
+SECRET_KEY=
+
+# Database Locations
+PLOT_BD_PATH=
+AUTH_DB_PATH=
+
