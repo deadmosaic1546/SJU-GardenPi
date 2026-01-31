@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <style>
+    body {
+      background-color: maroon;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+      /* Add a black background color to the top navigation */
+  .topnav {
+    width: auto;
+    padding: 0px 10px;
+    color: #f5f5f5;
+    
+    border-bottom: 1px solid #ccc;
+    
+    display: flex;
+    justify-content: left;
+    align-items: normal;
+    
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+
+    background-color:rgb(163, 124, 26);
+    overflow: hidden;
+  }
+
+  /* Style the links inside the navigation bar */
+  .topnav a {
+    float: left;
+    color: #ffffff;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+/* Change the color of links on hover */
+  .topnav a:hover {
+    background-color: blanchedalmond;
+    color: black;
+  }
+
+/* Add a color to the active/current link */
+  .topnav a.active {
+    background-color: goldenrod;
+    color: rgb(255, 255, 255);
+  }
+
+  .banner-user {
+      color: #f2f2f2;
+      font-size: 0.95rem;
+      display: flex;
+      margin-left: auto;
+      flex-direction: column;     
+      justify-content: center;     
+      align-items: center;         
+  }
+
+  .banner-user span{
+    margin-left: 4px; 
+  }
+
+    .wrapper {
+      height: 100vh;
+      display: flex;
+      justify-content: center;   /* center vertically */
+      align-items: center;       /* center horizontally */
+    }
+
+    .form-card {
+      padding: 20px 24px;
+      border: 10px solid goldenrod;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      min-width: 320px;
+      background: blanchedalmond;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .field input[type="text"],
+    .field input[type="password"] {
+      padding: 6px 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: 4px;
+      min-height: 1em; /* keeps layout stable even when empty */
+    }
+
+    .actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    button[type="submit"] {
+      padding: 6px 14px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #007bff;
+      color: #fff;
+    }
+
+    button[type="submit"]:hover {
+      background: #0056b3;
+    }
+
+    .remember-label {
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      gap: 4px;
+    }
+
+    .login-link {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+<body style="background-color:maroon;">
+  <div class="topnav">
+    <a href="/">Home</a>
+    <a href="/playlist">Your Playlists</a>
+    <a href="/search">Playlist Search</a>
+    <a class="active" href="/login">Login</a>
+
+    <div class="banner-user">
+      Logged in as <span id="usernameDisplay"></span>
+      <script>
+        const username = localStorage.getItem("username");
+        document.getElementById("usernameDisplay").innerText = username? username : "guest";
+      </script>
+    </div>
+  </div>
+  <div class="wrapper">
+    <form id="RegisterForm" class="form-card" action="/register" method="post">
+      <div class="field">
+        <label for="uname">Username</label>
+        <input type="text" id="uname" name="uname" placeholder="Enter Username" required>
+        <span id="userError" class="error"></span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" placeholder="Enter Email" required>
+        <span id="emailError" class="error"></span>
+      </div>
+
+      <div class="field">
+        <label for="psw1">Password</label>
+        <input type="password" id="psw1" name="psw1" placeholder="Enter Password" required>
+        <span id="pswError1" class="error"></span>
+      </div>
+
+      <div class="field">
+        <label for="psw2">Confirm Password</label>
+        <input type="password" id="psw2" name="psw2" placeholder="Enter Password Again" required>
+        <span id="pswError2" class="error"></span>
+      </div>
+
+      <div class="actions-row">
+        <button type="submit">Register</button>
+        <label class="remember-label">
+          <input type="checkbox" name="remember" checked>
+          Remember me
+        </label>
+      </div>
+
+      <div class="login-link">
+        <br><br>
+        Already have an account?
+        <a href="/login/">Login Here</a>
+      </div>  
+    </form>
+  </div>
+
+  <script>
+    function validateUsername(username) {
+      if (username === "") {
+        return "Username cannot be empty";
+      }
+
+      if (username.length < 8 || username.length > 40) {
+        return "Username must be between 8 and 40 characters";
+      }
+
+      const alphaNum = /^[A-Za-z0-9][A-Za-z0-9 _-]*$/;
+      if (!alphaNum.test(username)) {
+        return "Username must be alphanumeric and may include spaces, hyphens, and underscores (not at start)";
+      }
+
+      return "";
+    }
+
+    function validatePassword(password) {
+      if (password === "") {
+        return "Password cannot be empty";
+      }
+
+      if (password.length < 8 || password.length > 24) {
+        return "Password must be between 8 and 24 characters";
+      }
+
+      return "";
+    }
+
+    function validateEmail(email) {
+      if (email === "") {
+        return "Email cannot be empty";
+      }
+
+      const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!pattern.test(email)) {
+        return "Invalid email address";
+      }
+
+      return "";
+    }
+
+    const form = document.getElementById("RegisterForm");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      let valid = true;
+
+      // Clear previous errors
+      document.getElementById("userError").innerText = "";
+      document.getElementById("emailError").innerText = "";
+      document.getElementById("pswError1").innerText = "";
+      document.getElementById("pswError2").innerText = "";
+
+      // Username
+      const username = document.getElementById("uname").value.trim();
+      const userErr = validateUsername(username);
+      if (userErr !== "") {
+        document.getElementById("userError").innerText = userErr;
+        valid = false;
+      }
+
+      // Email
+      const email = document.getElementById("email").value.trim();
+      const emailErr = validateEmail(email);
+      if (emailErr !== "") {
+        document.getElementById("emailError").innerText = emailErr;
+        valid = false;
+      }
+
+      // Password 1
+      const password1 = document.getElementById("psw1").value.trim();
+      const pswErr1 = validatePassword(password1);
+      if (pswErr1 !== "") {
+        document.getElementById("pswError1").innerText = pswErr1;
+        valid = false;
+      }
+
+      // Password 2
+      const password2 = document.getElementById("psw2").value.trim();
+      if (password1 !== password2) {
+        document.getElementById("pswError2").innerText = "Passwords do not match";
+        valid = false;
+      }
+
+      if (valid) {
+        // All checks passed
+        form.submit();
+      }
+    });
+  </script>
+</body>
+</html>
