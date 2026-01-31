@@ -1,11 +1,17 @@
 from flask import Flask, render_template
 from dotenv import dotenv_values
 import os
-from flaskr.auth import auth_bp, db
-import flaskr.db_pull
+
+from flaskr.auth import auth_bp, close_auth_db
+
+current_data = {
+	"temperature": 0,
+	"humidity": 0
+}
 
 def create_app():
 	app = Flask(__name__, instance_relative_config=True)
+	
 	env_vars = dotenv_values()
 	plotPath = env_vars["PLOT_DB_PATH"]
 	authPath = env_vars["AUTH_DB_PATH"]
@@ -19,19 +25,15 @@ def create_app():
 
 	# ensure the instance folder exists
 	os.makedirs(app.instance_path, exist_ok=True)
+	
+	app.register_blueprint(auth_bp, url_prefix="/auth")
+	app.teardown_appcontext(close_auth_db)
 
-	app.register_blueprint(auth_bp, url_prefix='/auth')
+	@app.route('/')
+	def index():
+		return render_template("index.html", current_data=current_data)
 
 	return app
 
-current_data = {
-	"temperature": 0,
-	"humidity": 0
-}
 
-app = create_app()
-
-@app.route('/')
-def index():
-    return render_template("index.html", current_data=current_data)
 

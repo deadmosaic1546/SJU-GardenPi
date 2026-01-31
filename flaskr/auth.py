@@ -28,6 +28,9 @@ class Database:
             print(f"Error connecting to database: {e}\nExiting...")
             exit(1)
 
+    def close(self):
+        self.conn.close()
+
     def verifyTables(self):
         # Verify and create tables if they do not exist
         table_creation_queries = {
@@ -100,10 +103,9 @@ class Database:
             print(f"Unknown User with ID: {userID}")
             return ""
     
-db = Database(current_app.config["AUTH_DB"])
-
 @auth_bp.route('/register', methods=('GET', 'POST'))
 def register():
+    db = get_auth_db()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -130,6 +132,7 @@ def register():
 
 @auth_bp.route('/login', methods=('GET', 'POST'))
 def login():
+    db = get_auth_db()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -154,6 +157,7 @@ def login():
 
 @auth_bp.before_app_request
 def load_logged_in_user():
+    db = get_auth_db()
     userID = session.get('user_id')
 
     if userID is None:
@@ -176,3 +180,13 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+def get_auth_db():
+    if "auth_db" not in g:
+        g.auth_db = Database(current_app.config["AUTH_DB"])
+    return g.auth_db
+
+def close_auth_db(e=None):
+    db = g.pop("auth_db", None)
+    if db is not None:
+        db.close()
