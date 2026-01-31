@@ -25,7 +25,7 @@ class Database:
             self.conn.execute("PRAGMA busy_timeout=30000;")  # 30 seconds
 
         except sqlite3.Error as e:
-            print(f"Error connecting to database: {e}\nExiting...")
+            print(f"Error connecting to auth database: {e}\nExiting...")
             exit(1)
 
     def close(self):

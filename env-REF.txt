@@ -1,8 +1,5 @@
 # Instructions: Rename this file to '.env'
 
-# Web Port
-PORT=
-
 # Secret Key
 SECRET_KEY=
 
