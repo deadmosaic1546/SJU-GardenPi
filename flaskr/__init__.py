@@ -46,7 +46,7 @@ def create_app():
 
 	@app.route('/')
 	def index():
-		return render_template("index.html", current_data=current_data)
+		return render_template("index.html", current_data=bed_data)
 
 	return app
 
