@@ -4,10 +4,25 @@ import os
 
 from flaskr.auth import auth_bp, close_auth_db
 
-current_data = {
-	"temperature": 0,
-	"humidity": 0
-}
+bed_data = [
+	"dummy data that makes it 1-indexed",
+	{
+		"temperature": -5,
+		"humidity": 0
+	},
+	{
+		"temperature": 5,
+		"humidity": 10
+	},
+	{
+		"temperature": 15,
+		"humidity": 20
+	},
+	{
+		"temperature": 25,
+		"humidity": 30
+	}
+	]
 
 def create_app():
 	app = Flask(__name__, instance_relative_config=True)
