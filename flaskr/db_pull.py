@@ -3,7 +3,7 @@ import json
 from typing import List, Any
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, jsonify
 )
 
 plot_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -55,7 +55,7 @@ class PlotDB:
                 "SELECT * FROM plotData WHERE Plot_ID = ?;",
                 (int(plotID),)
             )
-            return self.cursor.fetchall()
+            return self.cursor.fetchall()[0]
         except sqlite3.Error as e:
             print("Failed to grab data from db: {e}")
             return []
@@ -101,19 +101,29 @@ def get_plot_db():
         g.plot_db = PlotDB(current_app.config["PLOT_DB"])
     return g.plot_db
 
-@plot_bp.route('/all')
+@plot_bp.route('/all', methods=['GET'])
 def pullData():
     return json.dumps(get_plot_db().getDataFromAllPlots())
 
-@plot_bp.route('/ids')
+@plot_bp.route('/ids', methods=['GET'])
 def pullIDs():
     return json.dumps(get_plot_db().getPlotIDs())
 
-@plot_bp.route('/pull/<int:plot_id>')
+@plot_bp.route('/pull/<int:plot_id>', methods=['GET'])
 def pullPlotData(plot_id: int):
     db = get_plot_db()
 
     if db.checkIfPlotIDExists(plot_id):
-        return json.dumps(db.getDataFromPlot(plot_id))
+        row = db.getDataFromPlot(plot_id)
+
+        return jsonify({
+            "plot_id": row[0],
+            "time": row[1],
+            "light": row[2],
+            "humidity": row[3],
+            "moisture": row[4],
+            "air_temp": row[5],
+            "soil_temp": row[6]
+        }) 
 
     return json.dumps({})

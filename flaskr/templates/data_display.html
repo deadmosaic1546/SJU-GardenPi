@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Planter Box Dashboard</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+
+<div id=top> <img width="550vw" height="auto" src="{{ url_for('static', filename='sju_wordmark_horz_color.svg') }}" style="padding: 0px 3vw;"></div>
+
+
+
+<div id="bottom"> 
+</div>
+
+<script>
+    async function loadData() {
+        const plot_id = {{ plot }};
+
+        try {
+            const response = await fetch(`/api/pull/${plot_id}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
+
+            const container = document.getElementById("bottom")
+            const card = document.createElement('div');
+            card.id = 'switch';
+
+            const data = await response.json();
+
+            card.innerHTML = `
+                <h1 id="dominant">Pico ${data.plot_id} Last Updated: ${data.time}</h1>
+                <h2>Light Level: ${data.light}</h2>
+                <h2>Humidity: ${data.humidity}</h2>
+                <h2>Soil Moisture: ${data.moisture}</h2>
+                <h2>Air Temperature: ${data.air_temp}</h2>
+                <h2>Soil Temperature: ${data.soil_temp}</h2>
+            `;
+
+            container.appendChild(card);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    
+    // Call when DOM is ready
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+
+</body>
+</html>
