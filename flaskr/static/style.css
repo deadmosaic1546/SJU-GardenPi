@@ -1,5 +1,6 @@
 body {
-  background-color :#6c6f70;
+  background: #33C7E8;
+  background: linear-gradient(180deg, rgba(51, 199, 232, 1) 18%, rgba(20, 83, 183, 1) 43%, rgba(3, 18, 156, 1) 100%);
   }
 
 #top {
@@ -8,9 +9,10 @@ body {
   font-family:'Tiempos-Text';
   height: 20vh;
   width: 100vw;
-  background-color: black;
   align-content: center;
-  color: #ffffff;
+  justify-content: center;
+  text-align: center;
+  color: #a2af9f;
 }
 
 #bottom {
@@ -27,19 +29,19 @@ body {
   #switch {
     vertical-align: top;
     display: inline-block;
-    background-color: #AAAAAA;
+    background-color: #d8a152;
     padding: 5px 5px;
     border-style: solid;
     border-width: 10px;
     border-radius: 5px;
-    border-color: #9e1b32;
+    border-color: #9c300c;
     flex-grow: 1;
-
+    text-align: center;
     }
 
  #dominant {
    font-family:'Tiempos-Text';
-   color: #000;
-   text-decoration: underline dotted 5px #9e1b32;
-   
+   color: #010203;
+   text-decoration: underline dotted 5px #047515;
+   text-align: center;   
    }

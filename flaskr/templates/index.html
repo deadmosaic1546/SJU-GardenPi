@@ -2,20 +2,25 @@
 <html>
 <head>
   <title>Planter Box Dashboard</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='leaf.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 
-<div id=top> <img width="550vw" height="auto" src="{{ url_for('static', filename='sju_wordmark_horz_color.svg') }}" style="padding: 0px 3vw;"></div>
+<div id=top>
+	<h1 style="color: #010203;">SJU Garden Monitor</h1>
+	<img width="90vh" height="auto" src="{{ url_for('static', filename='leaf.png') }}" style="padding: 0px 3vw;">
+</div>
 
 
 
 <div id="bottom"> 
-	<div id="switch"> <h1 id="dominant">Bed 1</h1> <h2>     {{bed.1.temperature}}</h2></div>
-	<div id="switch"> <h1 id="dominant">Bed 2</h1> <h2>     {{bed.2.humidity}}</h2> </div>
-	<div id="switch"> <h1 id="dominant">Bed 3</h1> <h2> {{bed.3.temperature}} </h2></div>
+	<div id="switch"> <h1 id="dominant">Bed 1</h1> <h2>Temperature: {{"{:.2f}".format(bed.1.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.1.humidity)}}%</h2> </div>
+	<div id="switch"> <h1 id="dominant">Bed 2</h1> <h2>Temperature: {{"{:.2f}".format(bed.2.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.2.humidity)}}%</h2> </div>
+	<div id="switch"> <h1 id="dominant">Bed 3</h1> <h2>Temperature: {{"{:.2f}".format(bed.3.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.3.humidity)}}%</h2> </div>
+	<div id="switch"> <h1 id="dominant">Bed 4</h1> <h2>Temperature: {{"{:.2f}".format(bed.4.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.4.humidity)}}%</h2> </div>
+	
 </div>
 
 
