@@ -44,3 +44,8 @@ Add a new python library (**Mac** + **Linux**)
 ~~~~
 $ pip freeze > requirements.txt
 ~~~~
+
+## Routes
+
+* `/list` – display all plot IDs with links to their individual data page.
+* `/api/list` – returns a JSON array of plot IDs from the database.

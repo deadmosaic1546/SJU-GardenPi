@@ -1,3 +1,6 @@
+import socket
+import os
+from dotenv import dotenv_values
 import sqlite3
 import json
 from typing import List, Any
@@ -8,9 +11,40 @@ from flask import (
 
 plot_bp = Blueprint('api', __name__, url_prefix='/api')
 
+def get_db_port():
+    # Try to get DB_PORT from environment or .env
+    port = os.environ.get("DB_PORT")
+    if port:
+        return int(port)
+    env_vars = dotenv_values()
+    return int(env_vars.get("DB_PORT", 0))
+
+# /api/live/<int:device_id> endpoint
+@plot_bp.route('/live/<int:device_id>', methods=['GET'])
+def live_device(device_id: int):
+    db_port = get_db_port()
+    if not db_port:
+        return jsonify({"Failure": "DB_PORT not set in environment or .env"}), 500
+    try:
+        with socket.create_connection(("127.0.0.1", db_port), timeout=5) as sock:
+            # Send the device_id as JSON: {"request": device_id}
+            sock.sendall(json.dumps({"request": device_id}).encode("utf-8"))
+            # Receive up to 1024 bytes (adjust as needed)
+            data = sock.recv(1024)
+            # Try to decode as JSON
+            try:
+                response = data.decode("utf-8")
+                json_data = json.loads(response)
+                if "Failure" in json_data:
+                    return jsonify(json_data), 400
+                return jsonify(json_data)
+            except Exception as e:
+                return jsonify({"Failure": f"Invalid JSON from device: {e}"}), 502
+    except Exception as e:
+        return jsonify({"Failure": f"Socket error: {e}"}), 502
+
 class PlotDB:
     def __init__(self, db_loc: str) -> None:
-        print(db_loc)
         self.db_path = db_loc
 
         try:
@@ -42,7 +76,7 @@ class PlotDB:
     def getPlotIDs(self):
         try:
             self.cursor.execute(
-                "SELECT Plot_ID FROM plotData GROUP BY Plot_ID;"
+                "SELECT Plot_ID FROM plots GROUP BY Plot_ID;"
             )
             return self.cursor.fetchall()
         except sqlite3.Error as e:
@@ -55,13 +89,17 @@ class PlotDB:
                 "SELECT * FROM plotData WHERE Plot_ID = ?;",
                 (int(plotID),)
             )
-            return self.cursor.fetchall()[0]
+            rows = self.cursor.fetchall()
+            if not rows:
+                # no entries for this plot
+                return None
+            return rows[0]
         except sqlite3.Error as e:
-            print("Failed to grab data from db: {e}")
-            return []
-        except e:
-            print("Misc Error: {e}")
-            return []
+            print(f"Failed to grab data from db: {e}")
+            return None
+        except Exception as e:
+            print(f"Misc Error: {e}")
+            return None
 
     # Outputs a list of lists. The inner lists contain the most recent data from the db
     def pullRecentDataEntry(self, plotID=-1) -> List[Any] :
@@ -107,23 +145,36 @@ def pullData():
 
 @plot_bp.route('/ids', methods=['GET'])
 def pullIDs():
+    # existing endpoint returns raw tuples; keep for compatibility
     return json.dumps(get_plot_db().getPlotIDs())
+
+@plot_bp.route('/list', methods=['GET'])
+def listIDs():
+    # return a simple JSON array of integers representing all plot IDs
+    ids = get_plot_db().getPlotIDs()
+    flat = [item[0] for item in ids]
+    print(flat)
+    return jsonify(flat)  # use jsonify for proper content-type
 
 @plot_bp.route('/pull/<int:plot_id>', methods=['GET'])
 def pullPlotData(plot_id: int):
     db = get_plot_db()
 
-    if db.checkIfPlotIDExists(plot_id):
-        row = db.getDataFromPlot(plot_id)
+    if not db.checkIfPlotIDExists(plot_id):
+        # plot not registered at all
+        return jsonify({"error": "plot not found"}), 404
 
-        return jsonify({
-            "plot_id": row[0],
-            "time": row[1],
-            "light": row[2],
-            "humidity": row[3],
-            "moisture": row[4],
-            "air_temp": row[5],
-            "soil_temp": row[6]
-        }) 
+    row = db.getDataFromPlot(plot_id)
+    if row is None:
+        # registered but no data entries
+        return jsonify({"error": "no data for plot"}), 404
 
-    return json.dumps({})
+    return jsonify({
+        "plot_id": row[0],
+        "time": row[1],
+        "light": row[2],
+        "humidity": row[3],
+        "moisture": row[4],
+        "air_temp": row[5],
+        "soil_temp": row[6]
+    })

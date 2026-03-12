@@ -59,6 +59,11 @@ def create_app():
 		dummy_data_change()
 		return render_template("index.html", bed=bed_data)
 
+	@app.route('/list', methods=['GET'])
+	def list_plots():
+		# render page showing all plots available
+		return render_template('list.html')
+
 	@app.route('/display/<int:plot_id>', methods=['GET'])
 	def display(plot_id: int):
 		plotdb = get_plot_db()

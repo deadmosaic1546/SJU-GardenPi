@@ -6,4 +6,4 @@ SECRET_KEY=
 # Database Locations
 PLOT_DB_PATH=
 AUTH_DB_PATH=
-
+DB_PORT=

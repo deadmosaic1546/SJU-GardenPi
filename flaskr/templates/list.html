@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Available Plots</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div id=top>
+    <h1>Plots</h1>
+</div>
+
+<div id="bottom">
+    <!-- list of plots will be injected here -->
+</div>
+
+<script>
+    async function loadList() {
+        try {
+            const response = await fetch('/api/list');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error ${response.status}`);
+            }
+
+            const ids = await response.json();
+            const container = document.getElementById('bottom');
+
+            if (ids.length === 0) {
+                container.innerHTML = '<p>No plots found in the database.</p>';
+                return;
+            }
+
+            const ul = document.createElement('ul');
+            ids.forEach(id => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.textContent = `Plot ${id}`;
+                a.href = `/display/${id}`;
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            container.appendChild(ul);
+        } catch (err) {
+            console.error(err);
+            const container = document.getElementById('bottom');
+            container.innerHTML = '<p>Failed to load plot list.</p>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadList);
+</script>
+
+</body>
+</html>
