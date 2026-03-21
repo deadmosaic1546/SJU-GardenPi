@@ -1,3 +1,6 @@
+# Project Unique Files
+garden-web.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

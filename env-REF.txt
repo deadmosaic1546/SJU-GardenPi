@@ -1,9 +1,20 @@
-# Instructions: Rename this file to '.env'
+# Instructions: Rename this file to 'garden-web.env'
+
+# Flask Info
+FLASK_APP=
+FLASK_ENV=
+
+# Web Port
+FLASK_RUN_HOST=
+FLASK_RUN_PORT=
 
 # Secret Key
 SECRET_KEY=
 
 # Database Locations
-PLOT_DB_PATH=
-AUTH_DB_PATH=
-DB_PORT=
+GARDEN_CLUSTER_DB=
+GARDEN_AUTH_DB=
+
+
+
+

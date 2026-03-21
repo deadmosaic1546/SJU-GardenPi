@@ -20,7 +20,13 @@
 <button id="liveBtn">Get Live Data</button>
 
 <script>
+<<<<<<< HEAD
     const plot_id = {{ plot }};  // make plot_id accessible to other functions
+=======
+    const plot_id = '{{ plot }}';
+    
+    async function loadData() {
+>>>>>>> production-test
 
     function renderData(data) {
         const container = document.getElementById("bottom");

@@ -35,18 +35,27 @@ def dummy_data_change():
 		bed["temperature"] = overall_temp + random.randint(-10,10)/4
 		bed["humidity"] = overall_humidity + random.randint(-10,10)/4
 
-def create_app():
-	app = Flask(__name__, instance_relative_config=True)
-	
-	env_vars = dotenv_values()
+import os
+from flask import Flask
 
-	app.config.from_mapping(
-        SECRET_KEY=env_vars["SECRET_KEY"],
-        PLOT_DB=env_vars["PLOT_DB_PATH"],
-		AUTH_DB=env_vars["AUTH_DB_PATH"],
+def create_app() -> Flask:
+	app = Flask(
+		__name__,
+		instance_relative_config=False,
+		static_folder="static",
+		template_folder="templates",
+	)
+	# Core config from environment
+	app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-change-me")
+	app.config["AUTH_DB_PATH"] = os.environ.get(
+		"GARDEN_AUTH_DB",
+		"/var/lib/garden-web/auth.db"
+    )
+	app.config["CLUSTER_DB_PATH"] = os.environ.get(
+		"GARDEN_CLUSTER_DB",
+		"/var/lib/garden/plot.db"
 	)
 
-	# ensure the instance folder exists
 	os.makedirs(app.instance_path, exist_ok=True)
 	
 	app.register_blueprint(auth_bp, url_prefix="/auth")

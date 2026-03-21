@@ -86,7 +86,7 @@ class PlotDB:
     def getDataFromPlot(self, plotID: int):
         try:
             self.cursor.execute(
-                "SELECT * FROM plotData WHERE Plot_ID = ?;",
+                "SELECT * FROM plotData WHERE Plot_ID = ? ORDER BY time DESC LIMIT 1;",
                 (int(plotID),)
             )
             rows = self.cursor.fetchall()
@@ -136,7 +136,7 @@ class PlotDB:
         
 def get_plot_db():
     if "plot_db" not in g:
-        g.plot_db = PlotDB(current_app.config["PLOT_DB"])
+        g.plot_db = PlotDB(current_app.config["CLUSTER_DB_PATH"])
     return g.plot_db
 
 @plot_bp.route('/all', methods=['GET'])
