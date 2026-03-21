@@ -16,8 +16,9 @@
 </div>
 
 <script>
+    const plot_id = '{{ plot }}';
+    
     async function loadData() {
-        const plot_id = {{ plot }};
 
         try {
             const response = await fetch(`/api/pull/${plot_id}`);

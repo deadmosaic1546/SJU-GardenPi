@@ -1,0 +1,35 @@
+[Unit]
+Description=Garden Web UI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+User=gardenweb
+Group=gardenweb
+SupplementaryGroups=picos
+
+WorkingDirectory=/usr/local/lib/garden-web
+EnvironmentFile=-/etc/garden-web/garden-web.env
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=/usr/local/lib/garden-web/.venv/bin/python -m flaskr
+
+Restart=always
+RestartSec=2
+
+UMask=0027
+
+StandardOutput=journal
+StandardError=journal
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/garden-web /var/log/garden-web
+ReadOnlyPaths=/var/lib/garden
+
+[Install]
+WantedBy=multi-user.target

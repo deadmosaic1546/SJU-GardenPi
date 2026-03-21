@@ -183,7 +183,7 @@ def login_required(view):
 
 def get_auth_db():
     if "auth_db" not in g:
-        g.auth_db = Database(current_app.config["AUTH_DB"])
+        g.auth_db = Database(current_app.config["AUTH_DB_PATH"])
     return g.auth_db
 
 def close_auth_db(e=None):
