@@ -25,7 +25,7 @@ VAR_DIR="/var/lib/${APP_NAME}"
 LOG_DIR="/var/log/${APP_NAME}"
 
 SERVICE_NAME="${APP_NAME}.service"
-SERVICE_SRC="${PROJECT_ROOT}/${SERVICE_NAME}"
+SERVICE_SRC="${PROJECT_ROOT}/docs/${SERVICE_NAME}"
 SERVICE_DST="/etc/systemd/system/${SERVICE_NAME}"
 
 CLUSTER_VAR_DIR="/var/lib/garden"
@@ -120,6 +120,9 @@ fi
 
 echo "[*] Creating Python virtual environment..."
 python3 -m venv "${VENV_DIR}"
+chmod +x "${VENV_DIR}/bin/pip"
+chmod +x "${VENV_DIR}/bin/pip3"
+chmod +x "${VENV_DIR}/bin/pip3.13"
 "${VENV_DIR}/bin/pip" install --upgrade pip wheel
 "${VENV_DIR}/bin/pip" install -r "${PROJECT_ROOT}/requirements.txt"
 
@@ -140,6 +143,8 @@ chown root:root "${APP_BIN_DIR}/${APP_NAME}"
 chmod 0755 "${APP_BIN_DIR}/${APP_NAME}"
 
 ln -sf "${APP_BIN_DIR}/${APP_NAME}" "/usr/local/bin/${APP_NAME}"
+
+mkdir -m "${APP_DIR}/instance"
 
 echo "[*] Ensuring cluster DB permissions allow shared-group read access..."
 if [[ -d "${CLUSTER_VAR_DIR}" ]]; then
