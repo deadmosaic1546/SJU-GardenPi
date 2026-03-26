@@ -1,17 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Planter Box Dashboard</title>
+<meta charset="UTF-8">
+  <title>Community Garden Dashboard</title>
   <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400&amp;display=swap">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
 
+<div id="navbar">
+
+  <div class="nav-left">
+    <span class="logo">Saint Joseph's University</span>
+  </div>
+
+  <div class="nav-center">
+  </div>
+
+  <div class="nav-right">
+    <a href="https://www.sju.edu/visit-us" class="btn">VISIT</a>
+    <a href="https://www.sju.edu/apply" class="btn">APPLY</a>
+    <a href="https://www.sju.edu/alumni/impact" class="btn">GIVE</a>
+  </div>
+
+</div>
+
+<div id="navbar-alt">
+</div>
 
 <div id=top> <img width="550vw" height="auto" src="{{ url_for('static', filename='sju_wordmark_horz_color.svg') }}" style="padding: 0px 3vw;"></div>
 <p><a href="{{ url_for('list_plots') }}">Back to plot list</a></p>
-
-
 
 <div id="bottom">
 </div>
@@ -19,65 +40,7 @@
 <!-- button to pull live data -->
 <button id="liveBtn">Get Live Data</button>
 
-<script>
-    const plot_id = {{ plot }};
-    
-    function renderData(data) {
-        const container = document.getElementById("bottom");
-        container.innerHTML = ''; // clear previous content
-        if (data.error) {
-            container.innerHTML = `<p>${data.error}</p>`;
-            return;
-        }
-        const card = document.createElement('div');
-        card.id = 'switch';
-        card.innerHTML = `
-                <h1 id="dominant">Pico ${data.plot_id} Last Updated: ${data.time}</h1>
-                <h2>Light Level: ${data.light}</h2>
-                <h2>Humidity: ${data.humidity}</h2>
-                <h2>Soil Moisture: ${data.moisture}</h2>
-                <h2>Air Temperature: ${data.air_temp}</h2>
-                <h2>Soil Temperature: ${data.soil_temp}</h2>
-            `;
-        container.appendChild(card);
-    }
-
-    async function fetchPlot(endpoint) {
-        try {
-            const response = await fetch(endpoint);
-            const container = document.getElementById("bottom");
-            if (!response.ok) {
-                const errInfo = await response.json().catch(() => ({}));
-                let message = `HTTP error ${response.status}`;
-                if (errInfo.error) message += `: ${errInfo.error}`;
-                container.innerHTML = `<p>${message}</p>`;
-                return null;
-            }
-            return await response.json();
-        } catch (err) {
-            console.error(err);
-            const container = document.getElementById("bottom");
-            container.innerHTML = '<p>Failed to load plot data.</p>';
-            return null;
-        }
-    }
-
-    async function loadData() {
-        const data = await fetchPlot(`/api/pull/${plot_id}`);
-        if (data) renderData(data);
-    }
-
-    async function loadLive() {
-        const data = await fetchPlot(`/api/live/${plot_id}`);
-        if (data) renderData(data);
-    }
-
-    // initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        loadData();
-        document.getElementById('liveBtn').addEventListener('click', loadLive);
-    });
-</script>
+<script src="{{ url_for('static', filename='data_display.js') }}"></script>
 
 </body>
 </html>

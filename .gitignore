@@ -1,5 +1,6 @@
 # Project Unique Files
 garden-web.env
+flaskr/tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

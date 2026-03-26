@@ -1,19 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Planter Box Dashboard</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='leaf.png') }}">
+<meta charset="UTF-8">
+  <title>Community Garden Dashboard</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400&amp;display=swap">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
 
+<div id="navbar">
 
-<div id=top>
-	<h1 style="color: #010203;">SJU Garden Monitor</h1>
-	<img width="90vh" height="auto" src="{{ url_for('static', filename='leaf.png') }}" style="padding: 0px 3vw;">
-	<p><a href="{{ url_for('list_plots') }}">View all plots</a></p>
+  <div class="nav-left">
+    <span class="logo">Saint Joseph's University</span>
+  </div>
+
+  <div class="nav-center">
+  </div>
+
+  <div class="nav-right">
+    <a href="https://www.sju.edu/visit-us" class="btn">VISIT</a>
+    <a href="https://www.sju.edu/apply" class="btn">APPLY</a>
+    <a href="https://www.sju.edu/alumni/impact" class="btn">GIVE</a>
+  </div>
+
 </div>
 
+<div id="navbar-alt">
+</div>
+
+<section id="hero">
+  <div class="hero-content">
+    <h1>COMMUNITY GARDEN</h1>
+    <h2 class="sjured"> at Saint Joseph's University </h2>
+    <p>
+      Web-Based dashboard for the digital monitoring components
+      of the Community Garden.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="/list">LIST OF ALL PLOTS</a>
+    </div>
+  </div>
+</section>
+
+<div id="spacer-8">
+</div>
 
 
 <div id="bottom"> 
@@ -21,9 +55,16 @@
 	<div id="switch"> <h1 id="dominant">Bed 2</h1> <h2>Temperature: {{"{:.2f}".format(bed.2.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.2.humidity)}}%</h2> </div>
 	<div id="switch"> <h1 id="dominant">Bed 3</h1> <h2>Temperature: {{"{:.2f}".format(bed.3.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.3.humidity)}}%</h2> </div>
 	<div id="switch"> <h1 id="dominant">Bed 4</h1> <h2>Temperature: {{"{:.2f}".format(bed.4.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.4.humidity)}}%</h2> </div>
-	
 </div>
 
+<footer id="site-footer">
+  <div id="spacer8">
+    <div id="spacer8">
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='data_display.js') }}"></script>
 
 </body>
 </html>
