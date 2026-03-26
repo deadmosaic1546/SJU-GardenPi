@@ -51,10 +51,22 @@
 
 
 <div id="bottom"> 
-	<div id="switch"> <h1 id="dominant">Bed 1</h1> <h2>Temperature: {{"{:.2f}".format(bed.1.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.1.humidity)}}%</h2> </div>
-	<div id="switch"> <h1 id="dominant">Bed 2</h1> <h2>Temperature: {{"{:.2f}".format(bed.2.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.2.humidity)}}%</h2> </div>
-	<div id="switch"> <h1 id="dominant">Bed 3</h1> <h2>Temperature: {{"{:.2f}".format(bed.3.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.3.humidity)}}%</h2> </div>
-	<div id="switch"> <h1 id="dominant">Bed 4</h1> <h2>Temperature: {{"{:.2f}".format(bed.4.temperature)}}°F<br>Humidity: {{"{:.2f}".format(bed.4.humidity)}}%</h2> </div>
+	<div id="bed1" class="bed-card">
+		<h1>Bed 1</h1>
+		<h2>Loading...</h2>
+	</div>
+	<div id="bed2" class="bed-card">
+		<h1>Bed 2</h1>
+		<h2>Loading...</h2>
+	</div>
+	<div id="bed3" class="bed-card">
+		<h1>Bed 3</h1>
+		<h2>Loading...</h2>
+	</div>
+	<div id="bed4" class="bed-card">
+		<h1>Bed 4</h1>
+		<h2>Loading...</h2>
+	</div>
 </div>
 
 <footer id="site-footer">

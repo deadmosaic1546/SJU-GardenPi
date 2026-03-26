@@ -29,20 +29,16 @@ function renderData(data) {
 async function fetchPlot(endpoint) {
     try {
         const response = await fetch(endpoint);
-        const container = document.getElementById("bottom");
         if (!response.ok) {
             const errInfo = await response.json().catch(() => ({}));
             let message = `HTTP error ${response.status}`;
             if (errInfo.error) message += `: ${errInfo.error}`;
-            container.innerHTML = `<p>${message}</p>`;
-            return null;
+            return { error: message };
         }
         return await response.json();
     } catch (err) {
         console.error(err);
-        const container = document.getElementById("bottom");
-        container.innerHTML = '<p>Failed to load plot data.</p>';
-        return null;
+        return { error: 'Failed to load plot data.' };
     }
 }
 
@@ -56,10 +52,31 @@ async function loadLive() {
     if (data) renderData(data);
 }
 
-
+async function loadBeds() {
+    for (let bedId = 1; bedId <= 4; bedId++) {
+        const data = await fetchPlot(`/api/pull/${bedId}`);
+        const bedDiv = document.getElementById(`bed${bedId}`);
+        if (data.error) {
+            bedDiv.innerHTML = `<h1>Bed ${bedId}</h1><h2>Unable to load data for ${bedId}</h2>`;
+        } else {
+            bedDiv.innerHTML = `
+                <h1>Bed ${bedId}</h1>
+                <h2>Light Level: ${data.light ? data.light.toFixed(2) : 'N/A'}</h2>
+                <h2>Air Temperature: ${data.air_temp ? data.air_temp.toFixed(2) : 'N/A'}°F</h2>
+                <h2>Humidity: ${data.humidity ? data.humidity.toFixed(2) : 'N/A'}%</h2>
+                <h2>Soil Moisture: ${data.moisture ? data.moisture.toFixed(2) : 'N/A'}</h2>
+                <h2>Soil Temperature: ${data.soil_temp ? data.soil_temp.toFixed(2) : 'N/A'}°F</h2>
+            `;
+        }
+    }
+}
 
 // initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    document.getElementById('liveBtn').addEventListener('click', loadLive);
+    if (window.location.pathname === '/') {
+        loadBeds();
+    } else {
+        loadData();
+        document.getElementById('liveBtn').addEventListener('click', loadLive);
+    }
 });
