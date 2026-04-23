@@ -37,8 +37,14 @@
 <div id="bottom">
 </div>
 
-<!-- button to pull live data -->
-<button id="liveBtn">Get Live Data</button>
+<!-- buttons for data views -->
+<div id="button-container">
+  <button id="mostRecentBtn">Most Recent Data</button>
+  <button id="liveBtn">Get Live Data</button>
+  <button id="dailyBtn">Daily Average</button>
+  <button id="weeklyBtn">Weekly Average</button>
+  <button id="monthlyBtn">Monthly Average</button>
+</div>
 
 <script src="{{ url_for('static', filename='data_display.js') }}"></script>
 

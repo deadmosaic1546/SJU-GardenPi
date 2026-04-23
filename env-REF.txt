@@ -8,6 +8,9 @@ FLASK_ENV=
 FLASK_RUN_HOST=
 FLASK_RUN_PORT=
 
+# DB Port
+DB_PORT=
+
 # Secret Key
 SECRET_KEY=
 

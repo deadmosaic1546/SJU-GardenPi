@@ -24,7 +24,7 @@ def get_db_port():
 def live_device(device_id: int):
     db_port = get_db_port()
     if not db_port:
-        return jsonify({"Failure": "DB_PORT not set in environment or .env"}), 500
+        return jsonify({"Failure": "Unable to reach DB"}), 500
     try:
         with socket.create_connection(("127.0.0.1", db_port), timeout=5) as sock:
             # Send the device_id as JSON: {"request": device_id}
@@ -41,7 +41,7 @@ def live_device(device_id: int):
             except Exception as e:
                 return jsonify({"Failure": f"Invalid JSON from device: {e}"}), 502
     except Exception as e:
-        return jsonify({"Failure": f"Socket error: {e}"}), 502
+        return jsonify({"Failure": "Socket error:"}), 502
 
 class PlotDB:
     def __init__(self, db_loc: str) -> None:
@@ -100,6 +100,74 @@ class PlotDB:
         except Exception as e:
             print(f"Misc Error: {e}")
             return None
+
+    def getDailyAverage(self, plotID: int):
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    Plot_ID,
+                    MAX(time),
+                    AVG(light),
+                    AVG(humidity),
+                    AVG(moisture),
+                    AVG(air_temp),
+                    AVG(soil_temp)
+                FROM plotData
+                WHERE Plot_ID = ?
+                  AND datetime(replace(time, 'T', ' ')) >= datetime('now', '-1 day');
+            """, (int(plotID),))
+
+            row = self.cursor.fetchone()
+
+            return row if row else None
+
+        except sqlite3.Error as e:
+            print(f"DB Error (Daily Avg): {e}")
+            return None
+        except Exception as e:
+            print(f"Misc Error: {e}")
+            return None
+        
+    def getWeeklyAverage(self, plotID: int):
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    plot_id, MAX(time), AVG(light), AVG(humidity), AVG(moisture), AVG(air_temp), AVG(soil_temp)
+                FROM plotData
+                WHERE Plot_ID = ?
+                  AND datetime(replace(time, 'T', ' ')) >= datetime('now', '-7 day');
+            """, (int(plotID),))
+
+            row = self.cursor.fetchone()
+            return row if row else None
+
+        except sqlite3.Error as e:
+            print(f"DB Error (Weekly Avg): {e}")
+            return None
+        except Exception as e:
+            print(f"Misc Error: {e}")
+            return None
+
+    def getMonthlyAverage(self, plotID: int):
+        try:
+            self.cursor.execute("""
+                SELECT 
+                    plot_id, MAX(time), AVG(light), AVG(humidity), AVG(moisture), AVG(air_temp), AVG(soil_temp)
+                FROM plotData
+                WHERE Plot_ID = ?
+                  AND datetime(replace(time, 'T', ' ')) >= datetime('now', '-30 day');
+            """, (int(plotID),))
+
+            row = self.cursor.fetchone()
+            return row if row else None
+
+        except sqlite3.Error as e:
+            print(f"DB Error (Monthly Avg): {e}")
+            return None
+        except Exception as e:
+            print(f"Misc Error: {e}")
+            return None
+
 
     # Outputs a list of lists. The inner lists contain the most recent data from the db
     def pullRecentDataEntry(self, plotID=-1) -> List[Any] :
@@ -170,11 +238,81 @@ def pullPlotData(plot_id: int):
         return jsonify({"error": "no data for plot"}), 404
 
     return jsonify({
-        "plot_id": row[0],
+        "plot_id": plot_id,
         "time": row[1],
-        "light": row[2],
-        "humidity": row[3],
-        "moisture": row[4],
-        "air_temp": row[5],
-        "soil_temp": row[6]
+        "light": row[2] if not row[2] else round(row[2], 2),
+        "humidity": row[3] if not row[3] else round(row[3], 2),
+        "moisture": row[4] if not row[4] else round(row[4], 2),
+        "air_temp": row[5] if not row[5] else round(row[5], 2),
+        "soil_temp": row[6] if not row[6] else round(row[6], 2)
+    })
+
+@plot_bp.route('/average/daily/<int:plot_id>', methods=['GET'])
+def pullDailyAverage(plot_id: int):
+    db = get_plot_db()
+
+    if not db.checkIfPlotIDExists(plot_id):
+        # plot not registered at all
+        return jsonify({"error": "plot not found"}), 404
+    
+    row = db.getDailyAverage(plot_id)
+    if row is None:
+        # registered but no data entries
+        return jsonify({"error": "no data for plot"}), 404
+    
+    return jsonify({
+        "plot_id": plot_id,
+        "time": row[1],
+        "light": row[2] if not row[2] else round(row[2], 2),
+        "humidity": row[3] if not row[3] else round(row[3], 2),
+        "moisture": row[4] if not row[4] else round(row[4], 2),
+        "air_temp": row[5] if not row[5] else round(row[5], 2),
+        "soil_temp": row[6] if not row[6] else round(row[6], 2)
+    })
+
+@plot_bp.route('/average/weekly/<int:plot_id>', methods=['GET'])
+def pullWeeklyAverage(plot_id: int):
+    db = get_plot_db()
+
+    if not db.checkIfPlotIDExists(plot_id):
+        # plot not registered at all
+        return jsonify({"error": "plot not found"}), 404
+    
+    row = db.getWeeklyAverage(plot_id)
+    if row is None:
+        # registered but no data entries
+        return jsonify({"error": "no data for plot"}), 404
+    
+
+    return jsonify({
+        "plot_id": plot_id,
+        "time": row[1],
+        "light": row[2] if not row[2] else round(row[2], 2),
+        "humidity": row[3] if not row[3] else round(row[3], 2),
+        "moisture": row[4] if not row[4] else round(row[4], 2),
+        "air_temp": row[5] if not row[5] else round(row[5], 2),
+        "soil_temp": row[6] if not row[6] else round(row[6], 2)
+    })
+
+@plot_bp.route('/average/monthly/<int:plot_id>', methods=['GET'])
+def pullMonthlyAverage(plot_id: int):
+    db = get_plot_db()
+
+    if not db.checkIfPlotIDExists(plot_id):
+        # plot not registered at all
+        return jsonify({"error": "plot not found"}), 404
+    
+    row = db.getMonthlyAverage(plot_id)
+    if row is None:
+        # registered but no data entries
+        return jsonify({"error": "no data for plot"}), 404
+    
+    return jsonify({
+        "plot_id": plot_id,
+        "time": row[1],
+        "light": row[2] if not row[2] else round(row[2], 2),
+        "humidity": row[3] if not row[3] else round(row[3], 2),
+        "moisture": row[4] if not row[4] else round(row[4], 2),
+        "air_temp": row[5] if not row[5] else round(row[5], 2),
+        "soil_temp": row[6] if not row[6] else round(row[6], 2)
     })

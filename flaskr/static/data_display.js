@@ -52,6 +52,21 @@ async function loadLive() {
     if (data) renderData(data);
 }
 
+async function loadDailyAverage() {
+    const data = await fetchPlot(`/api/average/daily/${plot_id}`);
+    if (data) renderData(data);
+}
+
+async function loadWeeklyAverage() {
+    const data = await fetchPlot(`/api/average/weekly/${plot_id}`);
+    if (data) renderData(data);
+}
+
+async function loadMonthlyAverage() {
+    const data = await fetchPlot(`/api/average/monthly/${plot_id}`);
+    if (data) renderData(data);
+}
+
 async function loadBeds() {
     for (let bedId = 1; bedId <= 4; bedId++) {
         const data = await fetchPlot(`/api/pull/${bedId}`);
@@ -77,6 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loadBeds();
     } else {
         loadData();
+        document.getElementById('mostRecentBtn').addEventListener('click', loadData);
         document.getElementById('liveBtn').addEventListener('click', loadLive);
+        document.getElementById('dailyBtn').addEventListener('click', loadDailyAverage);
+        document.getElementById('weeklyBtn').addEventListener('click', loadWeeklyAverage);
+        document.getElementById('monthlyBtn').addEventListener('click', loadMonthlyAverage);
     }
 });
